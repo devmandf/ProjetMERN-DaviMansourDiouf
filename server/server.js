@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path'); // Ajoutez cette ligne
 
 const app = express();
 app.use(cors());
@@ -19,7 +20,7 @@ const switchSchema = new mongoose.Schema({
 });
 const Switch = mongoose.model('Switch', switchSchema);
 
-// Routes
+// Routes API
 app.get('/api/switches', async (req, res) => {
   try {
     const switches = await Switch.find();
@@ -41,6 +42,17 @@ app.put('/api/switches/:id', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+// Servir les fichiers statiques du build React en production
+if (process.env.NODE_ENV === 'production') {
+  // Servir les fichiers statiques du dossier build
+  app.use(express.static(path.join(__dirname, '../client/build')));
+
+  // Pour toutes les autres requêtes, renvoyer l'index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+  });
+}
 
 // Initialiser les switches si vide
 async function initializeSwitches() {
