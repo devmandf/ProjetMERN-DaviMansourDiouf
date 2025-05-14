@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "npm start --prefix server"
+    "server": "npm start --prefix server",
+    "build": "cd ../client && npm install && npm run build && cd ../server && npm install"
   },
   "keywords": [],
   "author": "",
